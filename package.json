@@ -1,0 +1,36 @@
+{
+  "name": "reality-origami",
+  "version": "0.2.0",
+  "description": "Reality Origami: an endless procedural world of paper, glass and light, drawn as millions of Gaussian splats that three.js and Spark generate on the GPU.",
+  "type": "module",
+  "license": "MIT",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "build:single": "npm run build && node scripts/build-single.mjs",
+    "preview": "vite preview",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "smoke": "node scripts/qa/play-smoke.mjs",
+    "smoke:dist": "node scripts/qa/smoke-dist.mjs",
+    "shots:lab": "node scripts/qa/lab-shot.mjs",
+    "shots:film": "node scripts/capture/film-shots.mjs",
+    "render": "node scripts/capture/render-frames.mjs",
+    "encode": "node scripts/capture/encode.mjs"
+  },
+  "dependencies": {
+    "@sparkjsdev/spark": "2.4.0",
+    "three": "0.187.0"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.65.1",
+    "@types/node": "26.6.6",
+    "@types/three": "0.187.0",
+    "typescript": "7.0.2",
+    "vite": "8.3.8",
+    "vitest": "5.1.0"
+  }
+}

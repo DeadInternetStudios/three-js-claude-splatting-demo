@@ -1,0 +1,331 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#06070d" />
+    <title>Reality Origami</title>
+    <link rel="icon" href="data:," />
+    <meta name="description" content="A world folded from math. Walk, glide and fly through five endless paper realms drawn as millions of Gaussian splats, then fold the world around you. No models, textures or audio files. Everything is generated in your browser." />
+    <meta property="og:title" content="Reality Origami" />
+    <meta property="og:description" content="Five endless paper realms made only of math. Walk, glide, fly, and fold the world around you." />
+    <style>
+      html,
+      body {
+        margin: 0;
+        height: 100%;
+        background: #06070d;
+        overflow: hidden;
+        overscroll-behavior: none;
+      }
+      #boot {
+        position: fixed;
+        inset: 0;
+        z-index: 60;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #06070d;
+        font-family: "Courier New", Courier, monospace;
+      }
+      #boot-box {
+        border: 3px solid #bdbdbd;
+        background: #06070d;
+        color: #d6d6d6;
+        padding: 22px 26px 18px;
+        text-align: center;
+        min-width: min(546px, calc(100vw - 48px));
+        max-width: calc(100vw - 48px);
+      }
+      #boot.bad #boot-box {
+        border-color: #c06666;
+        color: #c06666;
+      }
+      #boot-pixel {
+        display: flex;
+        gap: 6px;
+        justify-content: center;
+        margin-bottom: 18px;
+      }
+      .boot-letter {
+        position: relative;
+        width: 18px;
+        height: 30px;
+        flex: none;
+      }
+      .boot-dot {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 6px;
+        height: 6px;
+        background: currentColor;
+      }
+      #boot-bar {
+        display: flex;
+        gap: 2px;
+        border: 2px solid #bdbdbd;
+        padding: 2px;
+        margin-bottom: 14px;
+      }
+      #boot.bad #boot-bar {
+        border-color: #c06666;
+      }
+      .boot-block {
+        position: relative;
+        flex: 1 1 0;
+        height: 16px;
+        background: #26262b;
+      }
+      .boot-block.on {
+        background: #d6d6d6;
+      }
+      /* The block after the last lit one blinks. Opacity runs on the compositor, so the bar still shows the page is alive while the first frame holds the main thread to compile the shaders. */
+      .boot-block.on + .boot-block:not(.on)::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: #d6d6d6;
+        animation: boot-wait 1s steps(1, end) infinite;
+      }
+      #boot.bad .boot-block::after {
+        display: none;
+      }
+      @keyframes boot-wait {
+        50% {
+          opacity: 0;
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .boot-block.on + .boot-block:not(.on)::after {
+          animation: none;
+          opacity: 0.5;
+        }
+      }
+      #boot.bad .boot-block.on {
+        background: #c06666;
+      }
+      #boot-status {
+        font-size: 14px;
+        font-weight: bold;
+        letter-spacing: 1px;
+        white-space: pre-wrap;
+        word-break: break-word;
+      }
+      #boot-note {
+        margin-top: 10px;
+        font-size: 11px;
+        letter-spacing: 1px;
+        opacity: 0.75;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="stage" aria-label="An endless procedural world you can walk through and fold"></canvas>
+
+    <div id="hud" data-ui="on">
+      <div id="stats" aria-hidden="true"></div>
+      <div id="reticle" aria-hidden="true"></div>
+
+      <nav id="dock" role="toolbar" aria-label="Powers">
+        <button type="button" data-action="planet" title="Roll the ground into a small planet">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="13" r="7.2" /><path d="M3.5 11c4 2.6 13.5 2.6 17 0" /><path d="M16 4.2l1.3-1.7M19 6l2-1" /></svg>
+          <span>Planet</span><kbd>1</kbd>
+        </button>
+        <button type="button" data-action="corkscrew" title="Twist the world about your line of sight">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5c10-3 14 1 7 5s-3 8 7 9" /><path d="M4.5 10.5c4 1 5.6 3.2 3 5.5" /></svg>
+          <span>Twist</span><kbd>2</kbd>
+        </button>
+        <button type="button" data-action="hinge" title="Fold the land ahead up and over your head">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 18l9-3 9-9" /><path d="M3 18l7 3 11-6" /><path d="M12 15v6" /></svg>
+          <span>Fold</span><kbd>3</kbd>
+        </button>
+        <button type="button" data-action="ripple" title="Send a ripple through the ground">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="2.2" /><path d="M7 7a7 7 0 0 0 0 10M17 7a7 7 0 0 1 0 10M4 4a11 11 0 0 0 0 16M20 4a11 11 0 0 1 0 16" /></svg>
+          <span>Ripple</span><kbd>4</kbd>
+        </button>
+        <i class="sep"></i>
+        <button type="button" data-action="fly" title="Toggle flight. Tap Space twice in the air for the same">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 3L3 10.5l7 2.6 2.6 7z" /><path d="M10 13l11-10" /></svg>
+          <span>Fly</span><kbd>F</kbd>
+        </button>
+        <button type="button" data-action="sing" title="Sing: a ring of light spreads from you">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18V5l11-2v13" /><circle cx="6.5" cy="18" r="2.5" /><circle cx="17.5" cy="16" r="2.5" /></svg>
+          <span>Sing</span><kbd>E</kbd>
+        </button>
+        <button type="button" data-action="world" title="Jump to another world">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5" /><path d="M3.5 12h17M12 3.5c-3.4 3.6-3.4 13.4 0 17M12 3.5c3.4 3.6 3.4 13.4 0 17" /></svg>
+          <span>World</span><kbd>N</kbd>
+        </button>
+        <button type="button" data-action="photo" title="Photo mode">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8h3l1.6-2.4h6.8L17 8h3v11H4z" /><circle cx="12" cy="13.2" r="3.4" /></svg>
+          <span>Photo</span><kbd>P</kbd>
+        </button>
+        <button type="button" data-action="help" title="Controls">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" /><path d="M9.6 9.4a2.5 2.5 0 1 1 3.4 2.3c-.7.4-1 .9-1 1.7M12 17h.01" /></svg>
+          <span>Help</span><kbd>H</kbd>
+        </button>
+      </nav>
+
+      <div id="photo" aria-label="Photo mode">
+        <label>Focus <input id="focus" type="range" min="0" max="100" value="46" /></label>
+        <label>Blur <input id="blur" type="range" min="0" max="100" value="0" /></label>
+        <button type="button" data-action="freeze">Freeze time<kbd>T</kbd></button>
+        <button type="button" data-action="save">Save photo<kbd>O</kbd></button>
+        <button type="button" data-action="share">Copy link<kbd>G</kbd></button>
+        <button type="button" data-action="photo" class="accent">Done<kbd>P</kbd></button>
+      </div>
+
+      <div id="touch" aria-hidden="true">
+        <div id="stick"><i></i></div>
+        <button type="button" id="touch-jump" aria-label="Jump"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M6 11l6-6 6 6" /></svg></button>
+        <button type="button" id="touch-down" aria-label="Down"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M6 13l6 6 6-6" /></svg></button>
+      </div>
+
+      <section id="help" aria-label="Controls">
+        <h2>Controls</h2>
+        <dl>
+          <div><dt><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd></dt><dd>Walk</dd></div>
+          <div><dt>Mouse</dt><dd>Look</dd></div>
+          <div><dt><kbd>Shift</kbd></dt><dd>Run, or fly fast</dd></div>
+          <div><dt><kbd>Space</kbd></dt><dd>Jump. Hold in the air to glide. Tap twice to fly</dd></div>
+          <div><dt><kbd>F</kbd></dt><dd>Fly. <kbd>Space</kbd> up, <kbd>C</kbd> down, <kbd>B</kbd> warp</dd></div>
+          <div><dt><kbd>1</kbd> <kbd>2</kbd> <kbd>3</kbd> <kbd>4</kbd></dt><dd>Planet, twist, fold, ripple</dd></div>
+          <div><dt><kbd>E</kbd></dt><dd>Sing a ring of light</dd></div>
+          <div><dt><kbd>P</kbd></dt><dd>Photo mode, with focus and blur</dd></div>
+          <div><dt><kbd>T</kbd> <kbd>M</kbd> <kbd>Q</kbd></dt><dd>Freeze time, mute, quality</dd></div>
+          <div><dt><kbd>G</kbd> <kbd>R</kbd></dt><dd>Copy a link to this place, new start</dd></div>
+          <div><dt><kbd>N</kbd></dt><dd>Jump to another world. The address keeps its seed</dd></div>
+        </dl>
+        <p>Every world is made from a seed. Add <code>?seed=7</code> to the address to visit a particular one.</p>
+      </section>
+    </div>
+
+    <div id="failure" hidden>
+      <div class="title">The world did not unfold</div>
+      <div class="note"></div>
+    </div>
+
+    <div id="boot" role="status" aria-live="polite">
+      <div id="boot-box">
+        <div id="boot-pixel" aria-hidden="true"></div>
+        <div id="boot-bar" aria-hidden="true"></div>
+        <div id="boot-status">STEP 1/4 - CHECKING YOUR BROWSER</div>
+        <div id="boot-note">NO DOWNLOADS. THE WHOLE GAME IS THIS FILE.</div>
+      </div>
+    </div>
+
+    <script>
+      window.__boot = (function () {
+        var FONT = {
+          L: ["100", "100", "100", "100", "111"],
+          O: ["111", "101", "101", "101", "111"],
+          A: ["010", "101", "111", "101", "101"],
+          D: ["110", "101", "101", "101", "110"],
+          I: ["111", "010", "010", "010", "111"],
+          N: ["101", "111", "101", "101", "101"],
+          G: ["111", "100", "101", "101", "111"],
+        };
+        var pixel = document.getElementById("boot-pixel");
+        "LOADING".split("").forEach(function (ch) {
+          var letter = document.createElement("span");
+          letter.className = "boot-letter";
+          var dot = document.createElement("i");
+          dot.className = "boot-dot";
+          var shadows = [];
+          FONT[ch].forEach(function (row, y) {
+            row.split("").forEach(function (cell, x) {
+              if (cell === "1" && (x !== 0 || y !== 0)) shadows.push(x * 6 + "px " + y * 6 + "px 0 0 currentColor");
+            });
+          });
+          dot.style.boxShadow = shadows.join(",");
+          letter.appendChild(dot);
+          pixel.appendChild(letter);
+        });
+        var bar = document.getElementById("boot-bar");
+        var blocks = [];
+        for (var i = 0; i < 24; i++) {
+          var block = document.createElement("i");
+          block.className = "boot-block";
+          bar.appendChild(block);
+          blocks.push(block);
+        }
+        var root = document.getElementById("boot");
+        var status = document.getElementById("boot-status");
+        var state = { ok: true, done: false, pct: 0 };
+        function set(pct, label) {
+          state.pct = pct;
+          var lit = Math.round((pct / 100) * blocks.length);
+          blocks.forEach(function (b, j) {
+            b.className = j < lit ? "boot-block on" : "boot-block";
+          });
+          if (label) status.textContent = label;
+        }
+        function fail(message) {
+          state.ok = false;
+          root.className = "bad";
+          set(state.pct || 8, "FAILED - " + message);
+          document.getElementById("boot-note").textContent = "THE GAME CANNOT RUN HERE. NOTHING IS WRONG WITH THE FILE.";
+        }
+        function check() {
+          var canvas = document.createElement("canvas");
+          var gl = null;
+          try {
+            gl = canvas.getContext("webgl2");
+          } catch (e) {
+            gl = null;
+          }
+          if (!gl) {
+            fail("THIS BROWSER HAS NO WEBGL 2. OPEN THIS FILE IN CHROME OR EDGE ON A COMPUTER.");
+            return;
+          }
+          var floatOk = false;
+          try {
+            if (gl.getExtension("EXT_color_buffer_float")) {
+              var tex = gl.createTexture();
+              gl.bindTexture(gl.TEXTURE_2D, tex);
+              gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA32F, 4, 4, 0, gl.RGBA, gl.FLOAT, null);
+              var fb = gl.createFramebuffer();
+              gl.bindFramebuffer(gl.FRAMEBUFFER, fb);
+              gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, tex, 0);
+              floatOk = gl.checkFramebufferStatus(gl.FRAMEBUFFER) === gl.FRAMEBUFFER_COMPLETE;
+            }
+          } catch (e) {
+            floatOk = false;
+          }
+          if (!floatOk) {
+            fail("THIS GPU CANNOT DRAW TO FLOAT TEXTURES. TRY CHROME WITH HARDWARE ACCELERATION ON, OR ANOTHER COMPUTER.");
+            return;
+          }
+          if (typeof Worker === "undefined") {
+            fail("THIS BROWSER HAS NO WEB WORKERS. OPEN THIS FILE IN CHROME OR EDGE.");
+            return;
+          }
+          set(25, "STEP 2/4 - BROWSER OK. READING THE GAME CODE");
+        }
+        set(8, "STEP 1/4 - CHECKING YOUR BROWSER");
+        check();
+        setTimeout(function () {
+          if (state.ok && !state.done && state.pct < 45) {
+            status.textContent = "STILL READING. IF THIS NEVER MOVES YOUR BROWSER IS TOO OLD FOR THIS FILE. TRY CHROME.";
+          }
+        }, 25000);
+        return {
+          get ok() {
+            return state.ok;
+          },
+          set: set,
+          fail: fail,
+          done: function () {
+            state.done = true;
+            set(100, "STEP 4/4 - DONE");
+            setTimeout(function () {
+              root.style.display = "none";
+            }, 200);
+          },
+        };
+      })();
+    </script>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

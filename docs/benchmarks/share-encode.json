@@ -1,0 +1,22 @@
+{
+  "reference": "out/reality-origami-1080p.mp4",
+  "candidate": "out/reality-origami-1080p-share.mp4",
+  "bytes": {
+    "reference": 137995513,
+    "candidate": 40107445
+  },
+  "frames": 1153,
+  "ssim": {
+    "luma": 0.982315,
+    "all": 0.984957,
+    "worstFrame": {
+      "n": 322,
+      "all": 0.966572
+    }
+  },
+  "psnr": {
+    "luma": 46.045508,
+    "average": 46.744561,
+    "worstFrameAverage": 42.016039
+  }
+}

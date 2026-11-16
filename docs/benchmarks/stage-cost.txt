@@ -1,0 +1,42 @@
+Drained cost in ms, 1920x1080, from scripts/qa/stage-cost.mjs. The earlier build is the one before the cell field cache and was served on port 4174. The current build was served on port 4173.
+
+== earlier build, run 1
+http://127.0.0.1:4174 at 1920x1080, drained cost in ms
+every layer                    p50  19.3  p95  23.0  frames 184
+no layer                       p50  10.1  p95  13.7  frames 240
+and no sky pass                p50   8.9  p95  12.0  frames 240
+and no cell field passes       p50   2.3  p95   3.8  frames 240
+and no resolve                 p50   0.5  p95   0.6  frames 240
+and no HDR draw                p50   0.4  p95   0.5  frames 241
+no console errors or warnings
+
+== current build, run 1
+http://127.0.0.1:4173 at 1920x1080, drained cost in ms
+every layer                    p50  11.9  p95  14.5  frames 241
+no layer                       p50   5.5  p95   9.9  frames 240
+and no sky pass                p50   2.4  p95   3.4  frames 240
+and no cell field passes       p50   2.3  p95   5.1  frames 240
+and no resolve                 p50   0.5  p95   0.5  frames 240
+and no HDR draw                p50   0.4  p95   0.5  frames 240
+no console errors or warnings
+
+== earlier build, run 2
+http://127.0.0.1:4174 at 1920x1080, drained cost in ms
+every layer                    p50  17.8  p95  20.1  frames 199
+no layer                       p50   9.9  p95  11.5  frames 240
+and no sky pass                p50   9.4  p95  11.4  frames 240
+and no cell field passes       p50   2.5  p95   2.8  frames 240
+and no resolve                 p50   0.5  p95   0.6  frames 241
+and no HDR draw                p50   0.4  p95   0.5  frames 240
+no console errors or warnings
+
+== current build, run 2
+http://127.0.0.1:4173 at 1920x1080, drained cost in ms
+every layer                    p50  13.2  p95  15.4  frames 241
+no layer                       p50   4.7  p95   8.7  frames 240
+and no sky pass                p50   2.3  p95   3.7  frames 241
+and no cell field passes       p50   2.3  p95   4.7  frames 240
+and no resolve                 p50   0.5  p95   0.6  frames 241
+and no HDR draw                p50   0.4  p95   0.5  frames 240
+no console errors or warnings
+

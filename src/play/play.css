@@ -1,0 +1,400 @@
+:root {
+  --ink: rgba(240, 243, 250, 0.95);
+  --dim: rgba(205, 213, 232, 0.62);
+  --glass: rgba(10, 12, 20, 0.5);
+  --edge: rgba(210, 222, 255, 0.16);
+  --accent: #ffb35c;
+  font-family: ui-sans-serif, -apple-system, "SF Pro Display", "Inter", system-ui, sans-serif;
+  color-scheme: dark;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+body {
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+#stage {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  touch-action: none;
+  outline: none;
+  cursor: crosshair;
+}
+
+#hud {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  transition: opacity 0.5s ease;
+}
+#hud button,
+#hud input,
+#hud section.show {
+  pointer-events: auto;
+}
+
+#stats {
+  position: absolute;
+  top: max(18px, env(safe-area-inset-top));
+  right: 22px;
+  font: 11px/1.4 ui-monospace, "SF Mono", Menlo, monospace;
+  color: var(--dim);
+  text-align: right;
+  white-space: pre;
+  text-shadow: 0 1px 10px rgba(0, 0, 0, 0.7);
+}
+
+#reticle {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 4px;
+  height: 4px;
+  margin: -2px 0 0 -2px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.55);
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.25), 0 0 12px rgba(255, 255, 255, 0.25);
+  transition: opacity 0.4s ease;
+}
+
+#dock {
+  position: absolute;
+  left: 50%;
+  bottom: max(22px, env(safe-area-inset-bottom));
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 6px;
+  border-radius: 18px;
+  background: var(--glass);
+  border: 1px solid var(--edge);
+  backdrop-filter: blur(18px) saturate(1.3);
+  -webkit-backdrop-filter: blur(18px) saturate(1.3);
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.45);
+  max-width: calc(100vw - 16px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+#dock .sep {
+  width: 1px;
+  height: 22px;
+  margin: 0 5px;
+  background: var(--edge);
+}
+#dock button,
+#photo button {
+  appearance: none;
+  border: 0;
+  border-radius: 12px;
+  padding: 0 11px;
+  height: 38px;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font: inherit;
+  font-size: 13px;
+  letter-spacing: 0.02em;
+  color: var(--ink);
+  background: transparent;
+  cursor: pointer;
+  transition: background 0.18s ease, color 0.18s ease, transform 0.12s ease, box-shadow 0.3s ease;
+}
+#dock button svg {
+  width: 17px;
+  height: 17px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: 0.85;
+}
+#dock button:hover,
+#photo button:hover {
+  background: rgba(255, 255, 255, 0.09);
+}
+#dock button:active,
+#photo button:active {
+  transform: scale(0.96);
+}
+#dock button:focus-visible,
+#photo button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+#dock button[aria-pressed="true"] {
+  background: rgba(255, 255, 255, 0.14);
+  box-shadow: inset 0 0 0 1px var(--accent), 0 0 22px -4px var(--accent);
+  color: #fff;
+}
+#dock button[aria-pressed="true"] svg {
+  stroke: var(--accent);
+  opacity: 1;
+}
+kbd {
+  font: 10px/1 ui-monospace, "SF Mono", Menlo, monospace;
+  min-width: 17px;
+  padding: 3px 5px;
+  text-align: center;
+  border-radius: 5px;
+  color: var(--dim);
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+#photo {
+  position: absolute;
+  left: 50%;
+  bottom: max(22px, env(safe-area-inset-bottom));
+  transform: translate(-50%, 14px);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px;
+  border-radius: 18px;
+  background: var(--glass);
+  border: 1px solid var(--edge);
+  backdrop-filter: blur(18px) saturate(1.3);
+  -webkit-backdrop-filter: blur(18px) saturate(1.3);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.4s ease, transform 0.4s ease, visibility 0s linear 0.4s;
+  max-width: calc(100vw - 16px);
+  flex-wrap: wrap;
+  justify-content: center;
+}
+#photo label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--dim);
+  letter-spacing: 0.04em;
+  padding: 0 6px;
+}
+#photo input[type="range"] {
+  width: 110px;
+  accent-color: var(--accent);
+}
+#photo button.accent {
+  background: linear-gradient(180deg, #ffc47a, var(--accent));
+  color: #1b1004;
+  font-weight: 600;
+}
+#photo button.accent kbd {
+  color: rgba(27, 16, 4, 0.7);
+  background: rgba(27, 16, 4, 0.1);
+  border-color: rgba(27, 16, 4, 0.12);
+}
+#hud[data-ui="photo"] #photo {
+  opacity: 1;
+  visibility: visible;
+  transform: translate(-50%, 0);
+  transition-delay: 0s;
+}
+#hud[data-ui="photo"] #dock,
+#hud[data-ui="photo"] #reticle,
+#hud[data-ui="photo"] #stats,
+#hud[data-ui="photo"] #touch {
+  opacity: 0;
+  pointer-events: none;
+}
+
+#help {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -48%);
+  width: min(560px, calc(100vw - 32px));
+  padding: 22px 26px 18px;
+  border-radius: 20px;
+  background: rgba(8, 10, 18, 0.72);
+  border: 1px solid var(--edge);
+  backdrop-filter: blur(22px) saturate(1.3);
+  -webkit-backdrop-filter: blur(22px) saturate(1.3);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, transform 0.3s ease, visibility 0s linear 0.3s;
+}
+#help.show {
+  opacity: 1;
+  visibility: visible;
+  transform: translate(-50%, -50%);
+  transition-delay: 0s;
+}
+#help h2 {
+  margin: 0 0 14px;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.34em;
+  text-transform: uppercase;
+  color: var(--dim);
+}
+#help dl {
+  margin: 0;
+  display: grid;
+  gap: 9px;
+}
+#help dl > div {
+  display: grid;
+  grid-template-columns: 148px 1fr;
+  gap: 12px;
+  align-items: center;
+  font-size: 13px;
+}
+#help dt {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  align-items: center;
+  color: var(--dim);
+}
+#help dd {
+  margin: 0;
+}
+#help p {
+  margin: 16px 0 0;
+  font-size: 12px;
+  color: var(--dim);
+}
+#help code {
+  font: 11px ui-monospace, "SF Mono", Menlo, monospace;
+  padding: 2px 5px;
+  border-radius: 5px;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+#touch {
+  display: none;
+}
+html.touch #touch {
+  display: block;
+}
+html.touch #dock {
+  bottom: auto;
+  top: max(14px, env(safe-area-inset-top));
+  left: auto;
+  right: 12px;
+  transform: none;
+  flex-direction: column;
+  padding: 4px;
+}
+html.touch #dock kbd,
+html.touch #dock span,
+html.touch #dock .sep {
+  display: none;
+}
+html.touch #dock button {
+  padding: 0 10px;
+}
+@media (max-height: 560px) {
+  html.touch #dock {
+    flex-direction: row;
+  }
+}
+#stick {
+  position: absolute;
+  width: 116px;
+  height: 116px;
+  margin: -58px 0 0 -58px;
+  border-radius: 50%;
+  border: 1px solid var(--edge);
+  background: rgba(255, 255, 255, 0.05);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+#stick.on {
+  opacity: 1;
+}
+#stick i {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 44px;
+  height: 44px;
+  margin: -22px 0 0 -22px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.22);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+#touch button {
+  position: absolute;
+  right: 18px;
+  width: 74px;
+  height: 74px;
+  border-radius: 50%;
+  border: 1px solid var(--edge);
+  background: var(--glass);
+  color: var(--ink);
+  font: inherit;
+  font-size: 13px;
+  letter-spacing: 0.04em;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  touch-action: none;
+}
+#touch button svg {
+  width: 26px;
+  height: 26px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+#touch-jump {
+  bottom: max(26px, env(safe-area-inset-bottom));
+}
+#touch-down {
+  bottom: calc(max(26px, env(safe-area-inset-bottom)) + 88px);
+  width: 56px !important;
+  height: 56px !important;
+  right: 27px !important;
+  font-size: 11px !important;
+}
+
+#failure {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 22px;
+  background: radial-gradient(120% 90% at 50% 40%, #11142a 0%, #06070d 70%);
+  transition: opacity 1.2s ease, visibility 0s linear 1.2s;
+}
+#failure .title {
+  font-size: clamp(18px, 3vw, 34px);
+  font-weight: 300;
+  letter-spacing: 0.5em;
+  padding-left: 0.5em;
+}
+#failure .note {
+  font-size: 12px;
+  letter-spacing: 0.2em;
+  color: var(--dim);
+  text-transform: uppercase;
+  text-align: center;
+  max-width: 80vw;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition-duration: 0.01s !important;
+  }
+}

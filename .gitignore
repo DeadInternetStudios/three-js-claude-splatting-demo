@@ -1,0 +1,15 @@
+node_modules/
+dist/
+.work/
+out/
+*.log
+.DS_Store
+.venv/
+__pycache__/
+*.pyc
+test-results/
+playwright-report/
+.audit/
+
+# The track the film is cut to is not part of the repository.
+*.mp3

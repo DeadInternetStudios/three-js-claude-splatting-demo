@@ -1,0 +1,12 @@
+640x360 realm 0 yaw 0 pitch 0.04 agl 0: at level 0 the frame costs 9.50 ms. A coarser level saves
+level 1          0.80 ms   range -0.30 to 1.30
+level 2          0.30 ms   range -0.25 to 1.50
+level 3          0.55 ms   range 0.35 to 0.55
+1280x720 realm 0 yaw 0 pitch 0.04 agl 0: at level 0 the frame costs 10.00 ms. A coarser level saves
+level 1          0.75 ms   range 0.15 to 1.15
+level 2          0.95 ms   range 0.80 to 1.15
+level 3          0.50 ms   range -0.55 to 0.85
+1920x1080 realm 0 yaw 0 pitch 0.04 agl 0: at level 0 the frame costs 11.10 ms. A coarser level saves
+level 1          1.30 ms   range 0.85 to 1.70
+level 2          1.60 ms   range 1.05 to 1.95
+level 3          1.75 ms   range 0.85 to 1.80

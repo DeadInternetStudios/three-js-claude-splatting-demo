@@ -1,0 +1,8 @@
+1920x1080, display paced: realm 0 yaw 0 pitch 0.04 agl 0 level 0: at level 0 the frame costs 10.60 ms. A coarser level saves
+level 1          0.85 ms   range 0.05 to 1.15
+level 2          1.05 ms   range 0.60 to 1.35
+level 3          1.25 ms   range 0.45 to 1.35
+1920x1080, saturated: realm 0 yaw 0 pitch 0.04 agl 0 level 0: at level 0 the frame costs 10.70 ms. A coarser level saves
+level 1          1.15 ms   range 0.75 to 1.60
+level 2          1.50 ms   range 0.95 to 2.00
+level 3          1.95 ms   range 1.15 to 2.10

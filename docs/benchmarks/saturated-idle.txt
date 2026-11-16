@@ -1,0 +1,4 @@
+1280x720 realm 0 yaw 0 pitch 0.04 agl 0 level 0: the frame costs 10.20 ms. Layers whose slots all decline add
+1 M slots        0.20 ms   range -0.10 to 0.65
+2 M slots        0.35 ms   range -0.10 to 0.70
+4 M slots        0.55 ms   range 0.10 to 1.00

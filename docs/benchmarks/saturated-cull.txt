@@ -1,0 +1,12 @@
+1920x1080 realm 0 yaw 0 pitch 0.04 agl 0: with the cull on the frame costs 10.80 ms. Turning it off adds
+cull off         1.75 ms   range 1.35 to 2.00
+1920x1080 realm 2 yaw 0 pitch 0.04 agl 0: with the cull on the frame costs 9.90 ms. Turning it off adds
+cull off         1.85 ms   range 1.55 to 2.05
+1920x1080 realm 4 yaw 0 pitch 0.04 agl 0: with the cull on the frame costs 11.60 ms. Turning it off adds
+cull off         2.40 ms   range 2.15 to 2.55
+1920x1080 realm 0 yaw 0 pitch -0.22 agl 70: with the cull on the frame costs 9.50 ms. Turning it off adds
+cull off         2.20 ms   range 1.75 to 2.40
+1920x1080 realm 0 yaw 0 pitch 0.6 agl 0: with the cull on the frame costs 10.70 ms. Turning it off adds
+cull off         2.00 ms   range 1.75 to 2.40
+1920x1080 realm 0 yaw 0 pitch -0.9 agl 2500: with the cull on the frame costs 9.10 ms. Turning it off adds
+cull off         1.30 ms   range 0.80 to 1.65

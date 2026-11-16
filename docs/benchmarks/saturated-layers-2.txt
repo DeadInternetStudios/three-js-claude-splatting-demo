@@ -1,0 +1,24 @@
+load average before 23
+1920x1080 realm 0 yaw 0 pitch 0.04 agl 0: 982,141 splats drawn, every layer costs 13.60 ms. Hiding a layer saves
+ground4          1.10 ms   range 0.75 to 1.75
+ground1          1.00 ms   range 0.45 to 1.30
+ground2          0.85 ms   range 0.30 to 1.35
+ground3          0.80 ms   range 0.10 to 1.90
+ground6          0.80 ms   range 0.60 to 1.35
+wonders          0.80 ms   range -0.50 to 3.90
+ground5          0.70 ms   range -0.10 to 1.00
+groundNear0      0.65 ms   range -0.15 to 0.75
+ground0          0.60 ms   range 0.35 to 1.35
+beasts           0.50 ms   range -0.50 to 0.75
+flora2           0.40 ms   range -0.40 to 0.75
+groundNear1      0.40 ms   range 0.35 to 1.35
+flocks           0.40 ms   range -0.05 to 2.40
+flora0           0.40 ms   range 0.25 to 0.55
+clouds           0.30 ms   range -0.30 to 1.05
+flora1           0.30 ms   range 0.15 to 0.75
+blooms           0.25 ms   range -0.30 to 0.70
+flora3           0.25 ms   range -0.45 to 1.10
+motes            0.25 ms   range 0.05 to 1.45
+sum             10.75 ms
+load average after 17
+no console errors or warnings
