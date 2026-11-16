@@ -211,7 +211,7 @@
         <div id="boot-pixel" aria-hidden="true"></div>
         <div id="boot-bar" aria-hidden="true"></div>
         <div id="boot-status">STEP 1/4 - CHECKING YOUR BROWSER</div>
-        <div id="boot-note">NO DOWNLOADS. THE WHOLE GAME IS THIS FILE.</div>
+        <div id="boot-note">NO DOWNLOADS. THE WHOLE WORLD IS THIS FILE.</div>
       </div>
     </div>
 
@@ -265,7 +265,7 @@
           state.ok = false;
           root.className = "bad";
           set(state.pct || 8, "FAILED - " + message);
-          document.getElementById("boot-note").textContent = "THE GAME CANNOT RUN HERE. NOTHING IS WRONG WITH THE FILE.";
+          document.getElementById("boot-note").textContent = "THE WORLD CANNOT RUN HERE. NOTHING IS WRONG WITH THE FILE.";
         }
         function check() {
           var canvas = document.createElement("canvas");
@@ -301,7 +301,7 @@
             fail("THIS BROWSER HAS NO WEB WORKERS. OPEN THIS FILE IN CHROME OR EDGE.");
             return;
           }
-          set(25, "STEP 2/4 - BROWSER OK. READING THE GAME CODE");
+          set(25, "STEP 2/4 - BROWSER OK. READING THE CODE");
         }
         set(8, "STEP 1/4 - CHECKING YOUR BROWSER");
         check();

@@ -1,5 +1,5 @@
 // A flower opens where each footstep landed, glows, and folds away again. The steps live in a
-// small float texture the game fills: row 0 holds (x, ground height, z, birth time), row 1 holds
+// small float texture the page fills: row 0 holds (x, ground height, z, birth time), row 1 holds
 // (realm * 2 + tint, scale, 0, 0). A slot nothing has written has a birth time far in the past.
 //
 // p0: slots in the ring, splats per bloom K, life in seconds, spread

@@ -487,7 +487,7 @@ class Flyby {
     return canvas.toDataURL("image/png");
   }
 
-  /** Renders the game's own score for a route offline, following the flight the camera took. */
+  /** Renders the world's own score for a route offline, following the flight the camera took. */
   async renderAudio(routeIndex: number): Promise<string> {
     const rt = ROUTES[routeIndex]!;
     const sampleRate = 44100;

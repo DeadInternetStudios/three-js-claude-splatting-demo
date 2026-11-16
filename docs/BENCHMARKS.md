@@ -166,7 +166,7 @@ The cull saves between 1.3 and 2.4 ms in all six views, which is 12 to 19 % of t
 
 ## What the ground detail levels save
 
-`GroundRings.setDetail` takes a share of the splats out of every ring. Level 0 draws all of them. Levels 1, 2 and 3 draw 0.75, 0.55 and 0.4 of the subdivision per side, which is 56 %, 30 % and 16 % of the splats before the subdivision is rounded to a whole number. The game picks the level from its render scale (`src/play/quality.ts`). At the 0.8 start scale of a 1080p display it runs level 0. The table gives what a coarser level saves against level 0, three sizes, six rounds of 40 frames each (`docs/benchmarks/saturated-detail.txt`).
+`GroundRings.setDetail` takes a share of the splats out of every ring. Level 0 draws all of them. Levels 1, 2 and 3 draw 0.75, 0.55 and 0.4 of the subdivision per side, which is 56 %, 30 % and 16 % of the splats before the subdivision is rounded to a whole number. The page picks the level from its render scale (`src/play/quality.ts`). At the 0.8 start scale of a 1080p display it runs level 0. The table gives what a coarser level saves against level 0, three sizes, six rounds of 40 frames each (`docs/benchmarks/saturated-detail.txt`).
 
 | Size | Level 0 ms | Level 1 saves | Level 2 saves | Level 3 saves |
 | --- | --- | --- | --- | --- |
@@ -197,7 +197,7 @@ The frame with every layer hidden is the least stable reading. It was 5.5 and 4.
 
 ## What a visitor gets
 
-The page runs with `quality=auto` unless a link says otherwise. The governor starts at the size that holds 1.35 million pixels, which is 1549×871 at 1920×1080 and at 2560×1440 and the full window at 1280×720. It lowers the size by a tenth when the smoothed frame time passes 1.5 times the best one, and it climbs by a tenth after 4 s of clean frames (`src/play/governor.ts`). The game also picks a level of ground detail from the scale it applies. Level 0 holds from 0.8, level 1 from 0.7, level 2 from 0.6 and level 3 below that (`src/play/quality.ts`). The runs in the table below kept the full window width, so they ran level 0.
+The page runs with `quality=auto` unless a link says otherwise. The governor starts at the size that holds 1.35 million pixels, which is 1549×871 at 1920×1080 and at 2560×1440 and the full window at 1280×720. It lowers the size by a tenth when the smoothed frame time passes 1.5 times the best one, and it climbs by a tenth after 4 s of clean frames (`src/play/governor.ts`). It also picks a level of ground detail from the scale it applies. Level 0 holds from 0.8, level 1 from 0.7, level 2 from 0.6 and level 3 below that (`src/play/quality.ts`). The runs in the table below kept the full window width, so they ran level 0.
 
 This table is two runs per size, 10 s per phase, after the 8 s load. It ran on the build with the title texture fix and the stall cap (`docs/QA.md`). The same run on the build before them logged `GL_INVALID_VALUE` errors from four pages. This run logged none.
 

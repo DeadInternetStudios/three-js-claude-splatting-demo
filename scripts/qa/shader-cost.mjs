@@ -5,7 +5,7 @@ import { serve } from "./serve.mjs";
 
 /**
  * Times the shader program of each layer, built alone with a cold shader cache. It is the table to read when a first
- * visit is slow, and the check to run after adding a layer or a wonder. It opens the game, takes the exact source three.js
+ * visit is slow, and the check to run after adding a layer or a wonder. It opens the page, takes the exact source three.js
  * sent to the GPU for every distinct layer program, and then builds each one in a blank page in the same browser. A
  * program is linked and drawn once into a 64 by 64 target with the three outputs of a layer, and the clock stops when a
  * pixel has been read back, because engines finish the work at the link or at the first draw. The line after
@@ -25,7 +25,7 @@ const { values } = parseArgs({
 });
 const ANCHOR = "vec3 col = shadeSurfel(s, n, p);";
 
-/** Runs in the game page. The layers grouped by program, each with the source the GPU got. */
+/** Runs in the page. The layers grouped by program, each with the source the GPU got. */
 function collectPrograms() {
   const world = window.__origami.world;
   const gl = world.stage.renderer.getContext();

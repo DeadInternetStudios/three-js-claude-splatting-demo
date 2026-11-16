@@ -11,8 +11,8 @@ import { REALM_LOOKS } from "../../src/world/realms.ts";
 import { wondersNear } from "../../src/world/wonders.ts";
 
 /**
- * Photographs the live game, which is what a player sees. The lab bench skips the governor, the camera feel and the
- * fold powers, so a lab still can look right while the game does not.
+ * Photographs the live world, which is what a visitor sees. The lab bench skips the governor, the camera feel and the
+ * fold powers, so a lab still can look right while the world does not.
  *
  *   node scripts/qa/game-shots.mjs [--out .work/shots] [--only dunes-walk,ember-high] [--size 1280x720] [--seed 1]
  *     [--time 40] [--url http://127.0.0.1:4173] [--browser chrome|firefox|webkit] [--list]

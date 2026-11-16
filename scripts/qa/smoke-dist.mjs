@@ -14,7 +14,7 @@ import { launchBrowser, isKnownNoise } from "./browsers.mjs";
  * opens that one file straight from disk with no server, the way a friend would open it from an e-mail, and
  * fails if the page asks for anything over the network.
  *
- * Checks that the page loads, the game starts on its own, the canvas draws something, the splat count is
+ * Checks that the page loads, the world starts on its own, the canvas draws something, the splat count is
  * reported and nothing logs an error or warning or answers with a 4xx or 5xx.
  */
 const args = Object.fromEntries(process.argv.slice(2).flatMap((a, i, all) => (a.startsWith("--") ? [[a.slice(2), all[i + 1]]] : [])));

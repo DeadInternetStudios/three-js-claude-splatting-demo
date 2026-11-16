@@ -43,7 +43,7 @@ function painted(): Promise<void> {
 async function start(): Promise<void> {
   const boot = window.__boot;
   if (boot && !boot.ok) return;
-  boot?.set(45, "STEP 3/4 - GAME CODE READ. MAKING THE WORLD");
+  boot?.set(45, "STEP 3/4 - CODE READ. MAKING THE WORLD");
   const canvas = document.getElementById("stage") as HTMLCanvasElement;
   const query = new URLSearchParams(location.search);
   try {

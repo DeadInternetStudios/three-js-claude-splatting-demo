@@ -2,11 +2,11 @@
 
 An endless procedural world made of paper, glass and light. Walk it, fly it, fold it.
 
-Every splat on screen is generated on the GPU from a seed, a clock and the camera. The page ships no model, texture, HDRI, font or sound file. The ground, the sky, the creatures, the music and the film titles are all code.
+Every splat on screen is generated on the GPU from a seed, a clock and the camera. The page ships no model, texture, HDRI, font or sound file. The ground, the sky, the creatures and the music are all code.
 
 ![A giant paper crane over the Paper Dunes, with a whale, a stone gate and a ringed planet behind it](docs/realm-dunes.jpg)
 
-*The giant paper crane of the Paper Dunes, in the live game. The whale, the gate, the ringed planet and the lava river are generated too.*
+*The giant paper crane of the Paper Dunes, in the live world. The whale, the gate, the ringed planet and the lava river are generated too.*
 
 Built with [three.js](https://threejs.org) and [Spark](https://github.com/sparkjsdev/spark) 2.4. Each frame the GPU generates 2.7 million splat slots from scratch. About a million of them are in range and get folded and sorted. The ones outside the picture skip their lighting and cost almost nothing to draw (`scripts/qa/splat-census.mjs`, median over the five realms). The source is about 6,500 lines of TypeScript and 2,600 lines of GLSL.
 
@@ -16,7 +16,6 @@ Built with [three.js](https://threejs.org) and [Spark](https://github.com/sparkj
 - [Dependencies](#dependencies)
 - [What is in the world](#what-is-in-the-world)
 - [How it works](#how-it-works)
-- [The film](#the-film)
 - [Tests and tools](#tests-and-tools)
 - [Limits](#limits)
 
@@ -45,7 +44,7 @@ The page needs WebGL 2 and a GPU that can render to float textures.
 | `/?calm` | no lightning flashes in the Ember Canyons. The page does this by itself when your system asks for reduced motion |
 | `/?debug` | expose `window.__origami` for scripts |
 | `/#…` | a share link. `G` copies one |
-| `/film.html`, `/lab.html` | the film capture page and the test bench. Development only, not in the build |
+| `/lab.html` | the test bench. Development only, not in the build |
 
 ### Controls
 
@@ -74,7 +73,7 @@ The page needs WebGL 2 and a GPU that can render to float textures.
 
 **Objects are triangles worked out from an index.** `src/world/glsl/kit.glsl` has five primitives (prism, tiers, blades, blob, arch). A pine, a crystal, a rib cage or a gate is a short list of triangles computed on the fly. A few flat splats cover each triangle.
 
-**A CPU twin of the terrain, bit for bit.** The walker, the camera and the film stand on the ground the GPU draws. `src/world/cpu` repeats the integer hash, the noise, the realm blend, the wonder placement and the creature paths, and `scripts/qa/terrain-probe.mjs` compares it with the GPU at 4,000 random points. The wonder tables are written once in TypeScript and emitted into the shader as GLSL constants (`wonderGlslTables`).
+**A CPU twin of the terrain, bit for bit.** The walker and the camera stand on the ground the GPU draws. `src/world/cpu` repeats the integer hash, the noise, the realm blend, the wonder placement and the creature paths, and `scripts/qa/terrain-probe.mjs` compares it with the GPU at 4,000 random points. The wonder tables are written once in TypeScript and emitted into the shader as GLSL constants (`wonderGlslTables`).
 
 **Shared values are cached in textures.** A ground vertex is shared by 15 to 25 splats and a flora cell by every splat of its object. `CellField` fills a float texture with those values in a small pass and skips the fill when the window, the seed and the sun have not moved. That took a standing frame at 1920×1080 from 17.9 ms to 11.6 ms (`docs/BENCHMARKS.md`).
 
@@ -82,7 +81,7 @@ The page needs WebGL 2 and a GPU that can render to float textures.
 
 **Splats you cannot see are skipped.** Each layer tests its splat against four planes through the eye and returns an invisible one when it lies outside. That splat keeps its place in Spark's draw order, so turning the camera never opens a hole while the sort catches up. The cull took 1.3 to 2.4 ms out of a 1920×1080 frame, and no pixel changed (`docs/BENCHMARKS.md`).
 
-**A weak machine loses splats as well as pixels.** The ground has four levels of detail, and the game picks one from its render scale. At 1920×1080 level 3 takes 1.75 ms off a frame, and it smears thin ground lines such as Ember's lava cracks.
+**A weak machine loses splats as well as pixels.** The ground has four levels of detail, and the page picks one from its render scale. At 1920×1080 level 3 takes 1.75 ms off a frame, and it smears thin ground lines such as Ember's lava cracks.
 
 **Five realms that blend.** Paper Dunes, Prism Forest, Lantern Deep, Mirror Flats and Ember Canyons each have their own terrain, palette, sky, light, plants, creatures and music. A smooth field blends neighbours along a cycle, so you walk from one into the next without a hard edge.
 
@@ -98,9 +97,7 @@ The page needs WebGL 2 and a GPU that can render to float textures.
 
 **The music is written as code.** `src/play/audio.ts` builds each realm's drone, melody, footsteps and wind from oscillators and noise, with a convolution reverb whose impulse response is made from noise. The wind opens as you speed up. Nothing is loaded.
 
-**A film that is a pure function of time.** `evaluate(t)` in `src/film/director.ts` maps a time to the camera, the world clock, the folds, the light rings, the grade and the titles. Fifteen shots cut to a cue sheet derived from the track. Motion blur comes from sub-frames, and the number of sub-frames comes from how fast the shot moves. A frame rendered twice comes out byte for byte the same, so a change to the code shows up as the exact list of frames it touched (`docs/QA.md`).
-
-**A boot check that talks plainly.** An inline script in `index.html` runs before the game code. It tests WebGL 2, float render targets and workers, shows an ugly grey loading bar while the world is made, and if the machine cannot run the game it says so in plain words instead of showing a black page. It uses a pixel font drawn with CSS and the system monospace, no font file. On a first visit it waits about 3 s at "BUILDING SHADERS" while the browser builds eight large programs, and keeps them, so the next visit takes 0.3 s (measured in Chrome on one Mac, `docs/QA.md`).
+**A boot check that talks plainly.** An inline script in `index.html` runs before the main code. It tests WebGL 2, float render targets and workers, shows an ugly grey loading bar while the world is made, and if the machine cannot run the world it says so in plain words instead of showing a black page. It uses a pixel font drawn with CSS and the system monospace, no font file. On a first visit it waits about 3 s at "BUILDING SHADERS" while the browser builds eight large programs, and keeps them, so the next visit takes 0.3 s (measured in Chrome on one Mac, `docs/QA.md`).
 
 **One HTML file.** `npm run build:single` inlines the JavaScript and CSS. A small Vite plugin in `vite.config.ts` stores Spark's WebAssembly module gzipped and unpacks it in the browser, which took the file from 3.36 MB to 1.83 MB. Browsers without `DecompressionStream` (older Safari) use a small inflate written for this, also in `vite.config.ts`.
 
@@ -108,7 +105,7 @@ The page needs WebGL 2 and a GPU that can render to float textures.
 
 ## A prompt that could make this
 
-This is a reconstruction. It was written after the project, as a guess at what a short brief to a coding agent could look like. It has not been run, and a prompt this short will not reproduce this code. The real brief was longer, came with a spec file and a music track, and was followed by many rounds of checking and fixing.
+This is a reconstruction. It was written after the project, as a guess at what a short brief to a coding agent could look like. It has not been run, and a prompt this short will not reproduce this code. The real brief was longer, came with a spec file, and was followed by many rounds of checking and fixing.
 
 ```text
 Build a three.js tech demo that does one thing: makes people on r/threejs stop
@@ -145,11 +142,6 @@ Sound
 - A procedural Web Audio score. A drone, a melody and footsteps for each realm.
   The wind opens as the player speeds up.
 
-The film
-- A 48 second cut to the attached track. Make it a pure function of time. Render
-  it offline at 1080p with supersampling and motion blur, cut on the beats found
-  by analysing the track, and encode with ffmpeg.
-
 Engineering
 - TypeScript, Vite, unit tests. A static build that works on GitHub Pages and
   as a single HTML file. Measure before you claim anything, and write down what
@@ -158,7 +150,7 @@ Engineering
 
 ## Dependencies
 
-The page needs two packages. Everything else is for building, testing and making the film.
+The page needs two packages. Everything else is for building and testing.
 
 ### Shipped in the page
 
@@ -176,20 +168,19 @@ The page needs two packages. Everything else is for building, testing and making
 | `vite` | 8.3.8 | dev server and build |
 | `typescript` | 7.0.2 | typecheck |
 | `vitest` | 5.1.0 | the 130 unit tests |
-| `@playwright/test` | 1.65.1 | drives Chrome for the smoke, benchmark and film scripts |
+| `@playwright/test` | 1.65.1 | drives Chrome for the smoke and benchmark scripts |
 | `@types/three` | 0.187.0 | types |
 | `@types/node` | 26.6.6 | types for the scripts |
 
 `package-lock.json` lists 102 packages. 100 of them are for development only.
 
-### On your machine, for the browser scripts and the film
+### On your machine, for the browser scripts
 
 | Tool | Needed for |
 | --- | --- |
 | Node 22 or newer | everything. Only Node 26.13.1 was tested |
 | Google Chrome | the scripts in `scripts/`, which start the installed Chrome (`channel: "chrome"`). Playwright does not download one |
-| `ffmpeg` with libx264 and AAC | `scripts/capture/encode.mjs` and the audio analyser |
-| Python 3 with `numpy>=2.0`, `scipy>=1.13`, `matplotlib>=3.9` | `scripts/audio/analyze.py`, only to cut the film to a different track |
+| `ffmpeg` with libx264 and AAC | the offline tools in `scripts/capture` and `scripts/qa` |
 
 The playable page needs none of the last three rows.
 
@@ -220,7 +211,7 @@ Whales cross the sky, mantas and jellyfish drift through the deep, flocks of pap
 
 ![The ground rolled into a small planet](docs/fold.jpg)
 
-*The ground rolled into a planet, 18.5 s into the film. Every splat keeps its shape through the fold.*
+*The ground rolled into a planet. Every splat keeps its shape through the fold.*
 
 A layer owns a range of splat indices. For each index one fused GPU program computes the surfel (position, normal, size, colour) from the index, the seed and the clock, folds it, carries its covariance, lights it and packs it as a Gaussian. The camera moves, the clock advances and Spark regenerates every layer.
 
@@ -244,46 +235,17 @@ src/core/deform     the fold, written once in double precision
 src/core/render     stage, HDR target, bloom and grade
 src/world           layers, GLSL, cell fields, realms, wonders
 src/world/cpu       the CPU twin of the height field, wonders and creatures
-src/play            the game: walker, powers, input, HUD, score, quality
-src/film            the director, shots, cue sheet, motion blur, titles
+src/play            the experience: walker, powers, input, HUD, score, quality
 src/lab             the test bench
 scripts/qa          checks and measurements, see docs/QA.md
-scripts/capture     film rendering and encoding
-scripts/audio       beat and impact analysis of a track
 ```
-
-## The film
-
-![A paper whale passing over the pennants at dawn](docs/hero.jpg)
-
-*A frame of the 48 second film, rendered by the same code the page runs.*
-
-`npm run dev`, then in another terminal:
-
-```bash
-# 1. Render 1153 frames at 1080p with 2x supersampling and motion blur. The run can be stopped and resumed.
-node scripts/capture/render-frames.mjs --out .work/frames/film --size 1920,1080 --ss 2 --samples auto --max-samples 20 --spacing 2.5
-
-# 2. Encode them with the track you cut it to.
-node scripts/capture/encode.mjs --frames .work/frames/film --audio path/to/track.mp3 --out out/reality-origami-1080p.mp4
-```
-
-The cut follows a cue sheet, `src/film/audio-cues.json`, that `scripts/audio/analyze.py` derived from the track the film was cut to: the bar grid, the impacts, the risers, the stop and the snap. The track is not in the repository. To cut to another one, install the analyser's packages, run it on the track, export the cues and adjust `src/film/cues.ts` and `src/film/shots.ts`.
-
-```bash
-pip install -r scripts/audio/requirements.txt    # needs ffmpeg on the PATH
-python scripts/audio/analyze.py path/to/track.mp3 --json .work/audio-analysis.json --png .work/audio-analysis.png
-python scripts/audio/export_cues.py
-```
-
-After encoding, `node scripts/qa/av-sync.mjs out/reality-origami-1080p.mp4` prints how many frames the picture's flash lands from the sound's attack at each impact.
 
 ## Tests and tools
 
 ```bash
 npm test             # 130 unit tests: fold maths and fold powers, terrain and wonder twins, creatures, spawn,
                      # share links, the flight ceiling, the lightning schedule, the rings of light, the view cull,
-                     # the ground detail levels, the lens, the cue sheet, every frame of the film, motion blur,
+                     # the ground detail levels, the lens, the cue sheet, motion blur,
                      # the resolution governor, the names of keys, which layers share a shader program, and a scan for external assets
 npm run typecheck
 npm run smoke        # plays the page in Chrome: walk, jump, glide, fly, fold, a larger and a smaller window,
@@ -293,26 +255,25 @@ node scripts/qa/smoke-dist.mjs --file dist/reality-origami.html   # opens the si
 npm run shots:lab    # stills of chosen camera poses from the test bench
 ```
 
-The checks that need a browser are scripts under `scripts/qa`. `terrain-probe` and `blur-brightness` need `npm run dev`. `field-cache`, `benchmark` and `stage-cost` need `npm run build && npm run preview`. `ab-cost` needs two build folders. `cold-start` needs `npm run build` and serves the build itself. `audio-check`, `game-shots`, `steady`, `soak`, `shader-cost`, `splat-census`, `saturated` and `npm run smoke` serve the source themselves. `av-sync` needs the encoded film.
+The checks that need a browser are scripts under `scripts/qa`. `terrain-probe` and `blur-brightness` need `npm run dev`. `field-cache`, `benchmark` and `stage-cost` need `npm run build && npm run preview`. `ab-cost` needs two build folders. `cold-start` needs `npm run build` and serves the build itself. `audio-check`, `game-shots`, `steady`, `soak`, `shader-cost`, `splat-census`, `saturated` and `npm run smoke` serve the source themselves.
 
 ```bash
 node scripts/qa/terrain-probe.mjs                     # GPU terrain against its CPU twin at 4,000 random points
 node scripts/qa/audio-check.mjs                       # renders the score offline and checks level and brightness
-node scripts/qa/blur-brightness.mjs                   # a film frame is as bright from four sub-frames as from one
+node scripts/qa/blur-brightness.mjs                   # a frame is as bright from four sub-frames as from one
 node scripts/qa/splat-census.mjs                      # how many splats a frame really draws, per realm and per layer
 node scripts/qa/field-cache.mjs                       # cached terrain fields against fresh ones while walking and flying
 node scripts/qa/benchmark.mjs --sizes 1920x1080 --runs 3   # frame times in scripted phases, with a noise floor
 node scripts/qa/stage-cost.mjs                        # what a frame spends its time on, by switching passes off
 node scripts/qa/saturated.mjs layers                  # what each layer costs, with the GPU saturated (also cull, detail, idle)
 node scripts/qa/ab-cost.mjs --a .work/distA --b .work/distB --control   # frame cost of two builds, interleaved, with a noise floor
-node scripts/qa/game-shots.mjs                        # photographs the live game from 19 fixed poses (serves the source itself). --browser firefox|webkit for another engine
+node scripts/qa/game-shots.mjs                        # photographs the live world from 19 fixed poses (serves the source itself). --browser firefox|webkit for another engine
 node scripts/qa/encodable.mjs                         # no layer hands Spark a splat that a GPU which flushes tiny half floats would read back wrong
 node scripts/qa/touch-smoke.mjs                       # plays the page as a touch phone, portrait and landscape: walk, turn, jump, tap a power
 node scripts/qa/steady.mjs                            # walks each realm one frame at a time and fails when the picture jumps from one frame to the next
 node scripts/qa/soak.mjs                              # plays five minutes and fails when the heap or the three.js resource counts keep growing
 node scripts/qa/cold-start.mjs                        # times the start of a build with a cold shader cache and with a warm one
 node scripts/qa/shader-cost.mjs                       # how long each layer's shader program takes to build alone (--browser firefox|webkit)
-node scripts/qa/av-sync.mjs out/reality-origami-1080p.mp4  # picture against sound in the encoded film
 ```
 
 [`docs/QA.md`](docs/QA.md) says what was checked and how, and what was not. [`docs/BENCHMARKS.md`](docs/BENCHMARKS.md) has frame times. [`docs/COMPATIBILITY.md`](docs/COMPATIBILITY.md) lists what the project needs from Spark and the browser.
@@ -323,7 +284,6 @@ node scripts/qa/av-sync.mjs out/reality-origami-1080p.mp4  # picture against sou
 - The frame times come from a busy machine and a headless browser that ticks at 60 Hz. At 1920×1080 the page held 60 fps in every scripted phase except the twist power, which read 57 (56 to 58) over three runs. At 2560×1440 the twist read 43. `docs/BENCHMARKS.md` has the method and says what the numbers do not show.
 - The fold is a smooth map and not a simulation. The covariance is exact to first order, so a splat that is large against the curvature is slightly wrong.
 - The realms change every few hundred metres with a short blend between them. Some blends look better than others.
-- The film uses a track that is not included. It looks like a Pixabay track under the Pixabay Content License, which forbids distributing it on its own. Use your own.
 - There is no time of day. Each realm has one fixed light.
 
 ## Deploy

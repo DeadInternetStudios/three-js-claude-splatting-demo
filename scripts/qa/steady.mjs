@@ -6,7 +6,7 @@ import { findSpawn } from "../../src/play/spawn.ts";
 import { createTerrain } from "../../src/world/cpu/terrain.ts";
 
 /**
- * Plays the game one frame at a time and checks that the picture does not jump. In each realm the walker holds the keys
+ * Plays the world one frame at a time and checks that the picture does not jump. In each realm the walker holds the keys
  * for `--frames` frames on a clock that moves 1/60 s per frame. After every frame the script reads the framebuffer and
  * keeps its mean brightness. The largest change from one frame to the next is what a player sees as a flash, and the
  * run fails when it passes `--limit`.

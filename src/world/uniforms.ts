@@ -54,7 +54,7 @@ export interface SkyLook {
   eclipse: number;
   /** 1 swaps the sun for a cratered moon. */
   moon: number;
-  /** How often the sky holds lightning. The game draws it from the world clock, and the film draws it on two chosen beats. */
+  /** How often the sky holds lightning. The page draws it from the world clock, and the film draws it on two chosen beats. */
   storm: number;
 }
 

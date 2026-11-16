@@ -4,7 +4,7 @@ Reality Origami draws an endless world as Gaussian splats that a GPU program inv
 
 ```mermaid
 flowchart LR
-  G[Game<br/>walker, powers, input] --> V[seed, clock, camera]
+  G[The walker<br/>powers, input] --> V[seed, clock, camera]
   D[evaluate t<br/>film director] --> V
   V --> S[ProcWorld.setView]
   S --> F[cell fields<br/>float passes]
@@ -19,7 +19,7 @@ flowchart LR
 
 | Entry point | File | What it does |
 | --- | --- | --- |
-| The page | `index.html`, `src/main.ts` | The game. The only input of `npm run build` |
+| The page | `index.html`, `src/main.ts` | The world. The only input of `npm run build` |
 | The film renderer | `film.html`, `src/film/film.ts` | Draws one film frame on request through `window.film`. `scripts/capture/render-frames.mjs` drives it |
 | The test bench | `lab.html`, `src/lab/` | Draws stills at chosen camera poses, times live runs, renders the score offline and samples the GPU terrain |
 
@@ -112,7 +112,7 @@ The cull turns off under depth of field (`apertureAngle > 0`), for a view whose 
 
 ### Levels of ground detail
 
-`GroundRings.setDetail` picks one of four levels. Each lowers the subdivision of every ring, so a facet's triangle holds fewer and larger splats (`ringSubdivision`). The layers keep their slots and the shader declines the ones past the last cell. The game picks the level from the render scale it applies (`groundDetailFor` in `src/play/quality.ts`), so a machine that falls behind loses resolution and splats together. Level 0 is the full world and level 1 looks the same to the eye in Ember, Prism and Flats. Level 3 smears thin lines on the ground, such as the lava cracks of Ember. `docs/BENCHMARKS.md` has what the levels save.
+`GroundRings.setDetail` picks one of four levels. Each lowers the subdivision of every ring, so a facet's triangle holds fewer and larger splats (`ringSubdivision`). The layers keep their slots and the shader declines the ones past the last cell. The page picks the level from the render scale it applies (`groundDetailFor` in `src/play/quality.ts`), so a machine that falls behind loses resolution and splats together. Level 0 is the full world and level 1 looks the same to the eye in Ember, Prism and Flats. Level 3 smears thin lines on the ground, such as the lava cracks of Ember. `docs/BENCHMARKS.md` has what the levels save.
 
 Shrinking the layers with the level was tried and left out. Keeping the level 0 slots at level 3 added 0.65 ms at 640 by 360 and 0.15 ms at 1920 by 1080, both inside the noise of the runs (measured while the engine was built, and not stored in this repository).
 
@@ -186,7 +186,7 @@ src/core/deform     the fold, written once in double precision
 src/core/render     stage, HDR target, bloom and grade
 src/world           layers, GLSL, cell fields, realms, wonders
 src/world/cpu       the CPU twin of the height field, wonders and creatures
-src/play            the game: walker, powers, input, HUD, score, quality
+src/play            the experience: walker, powers, input, HUD, score, quality
 src/film            the director, shots, cue sheet, motion blur, titles
 src/lab             the test bench
 scripts/qa          checks and measurements, see docs/QA.md

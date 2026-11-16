@@ -3,7 +3,7 @@ import { access, mkdir, writeFile } from "node:fs/promises";
 import { chromium } from "@playwright/test";
 
 /**
- * Renders the ten 2-minute flyby routes to MP4s with the game's own procedural score.
+ * Renders the ten 2-minute flyby routes to MP4s with the world's own procedural score.
  *
  *   node scripts/capture/flyby-videos.mjs [--only 1,4] [--size 1280,720] [--fps 24] [--keep-frames]
  *
