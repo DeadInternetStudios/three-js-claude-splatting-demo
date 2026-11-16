@@ -16,6 +16,7 @@ const el = <T extends HTMLElement>(id: string): T => {
 export class Hud {
   private readonly root = el("hud");
   private readonly statsEl = el("stats");
+  private readonly flyHintEl = el("flyhint");
   private readonly helpEl = el("help");
   private readonly stick = el("stick");
   private readonly dockButtons = new Map<string, HTMLButtonElement>();
@@ -60,6 +61,11 @@ export class Hud {
 
   setActive(action: Action, on: boolean): void {
     this.dockButtons.get(action)?.setAttribute("aria-pressed", String(on));
+  }
+
+  /** While flying, one line over the dock says what Shift and B do. */
+  setFlying(on: boolean): void {
+    this.flyHintEl.classList.toggle("show", on);
   }
 
   setStats(text: string): void {

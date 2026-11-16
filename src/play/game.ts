@@ -278,6 +278,7 @@ export class Game {
         return;
       case "mode":
         this.hud.setActive("fly", e.mode === "fly");
+        this.hud.setFlying(e.mode === "fly");
         return;
     }
   }
